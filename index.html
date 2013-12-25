@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stick Balance</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="stickbalance.js"></script>
+  </head>
+  <body onload="addevents()">
+    <div id="balancedzone">
+
+      <p id="position" class="status"></p>
+      <p id="distancia" class="status"></p>
+      <p id="duracion"  class="status"></p>
+      <p id="velocidad" class="status"></p>   
+      <p id="aceleracion" class="status"></p>   
+
+      <svg id="framestick">
+	<line id="stick" x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(255,0,0);stroke-width:6" />
+	  Sorry, your browser does not support inline SVG.
+      </svg>
+    </div>
+  </body>
+</html>
