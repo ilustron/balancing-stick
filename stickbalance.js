@@ -101,7 +101,7 @@ function drawer() {
     deg = stick.theta * (180 / Math.PI);
     ImgGroup.setAttribute("transform","rotate(" + deg + ",400,400)");
     mouse.speed();
-    console.log(mouse.ax);
+
     stick.RungeKutta();
 }
 
