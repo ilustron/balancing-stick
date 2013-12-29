@@ -6,13 +6,13 @@ body {
 #balancedzone{
     width:100%;
     height:400px;
-    background-color:white;
+    background-color:#333333;
     cursor: none;
 }
 
 #framestick{
-    position: absolute;
-    left: 25%;
+    position: relative;
+    left: 0;
     top: 0;
     width:800px;
     height:400px;

@@ -6,19 +6,19 @@
     <link rel="stylesheet" href="style.css">
     <script src="stickbalance.js"></script>
   </head>
-  <body onload="addevents()">
+  <body id="MouseRegion" onload="addevents()">
+    <header>
+      <h1>Balancing Stick</h1>
+      <p id="pasado"></p>
+    </header>
     <div id="balancedzone">
-
-      <p id="position" class="status"></p>
-      <p id="distancia" class="status"></p>
-      <p id="duracion"  class="status"></p>
-      <p id="velocidad" class="status"></p>   
-      <p id="aceleracion" class="status"></p>   
-
-      <svg id="framestick">
-	<line id="stick" x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(255,0,0);stroke-width:6" />
-	  Sorry, your browser does not support inline SVG.
-      </svg>
+    <svg id="framestick" width="800" height="400">
+      <g id="SVGroup">
+	<line id="stick" x1="400" y1="400" x2="400" y2="0" style="stroke:rgb(255,0,0);stroke-width:2" />
+	<circle id="mass" cx="400" cy="50" r="10" stroke="red" stroke-width="10" fill="red"/>      
+      </g>
+      Sorry, your browser does not support inline SVG.
+    </svg> 
     </div>
   </body>
 </html>

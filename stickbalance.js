@@ -1,128 +1,108 @@
 
-var x = 0;
-var y = 0;
 
-var x_old = 0;
-var y_old = 0;
+//theta toma el valor NaN después de llamar a mouse.speed()!!!!!!!!
 
-var t = 0;
-var t_old = 0; 
+var mouse = {  
 
-var vx = 0;
-var vx_old = 0;
+    n: 0,
 
-var vy = 0;
-var vy_old = 0;
+    track: function(e) {  
+        this.x=e.clientX;
+        this.y=e.clientY;
+	document.getElementById("framestick").style.left = this.x - 400 + 'px';
+    },
+    
+    speed: function() {
 
-var ax = 0;
+	
+        t = new Date().getTime();
+	x = this.x;
+	y = this.y;
 
+	if (this.n == 0) {
+	    this.x0 = x;
+	    this.t0 = t;
+	    this.Vx0 = 0; 
+            this.Vy0 = 0;
+	    this.ax = 0;
+	    this.ay = 0;
+	    this.n++;
+	}
+	else if (t != this.t0) {
 
-function tracker(e)
-{
-    x=e.clientX;
-    document.getElementById("framestick").style.left = x - 400 + 'px';
-}
+            dx = x - this.x0; 
+            dy = y - this.y0;
+            dt = t - this.t0;
+	    
+            Vx = dx / dt;
+            Vy = dy / dt;
+            
+            dVx = Vx - this.Vx0;
+            dVy = Vy - this.Vy0;
+	    
+            this.ax = dVx / dt;
+            this.ay = dVy / dt;
+
+	    this.Vx0 = Vx; 
+            this.Vy0 = Vy;
+	    
+	    
+            this.x0 = x; 
+            this.y0 = y;
+            this.t0 = t;
+	    this.n++;
+	}
+	else{
+	    this.x0 = x;
+	}
+    },
+};
 
 function addevents()
 {
-    region = document.getElementById('balancedzone');
-    region.addEventListener('mousemove', function(event){tracker(event);});
+    region = document.getElementById('MouseRegion');
+    region.addEventListener('mousemove', function(event){mouse.track(event);});
     region.addEventListener('click', function(){animationStart();});
 }
 
-
-function printstatus()
-{
-
-    d = new Date();
-    t = d.getTime();
-
-    dx = x - x_old;
-    dt = t -t_old;
-    if(dt!=0)
-    {
-	    vx = dx / dt;    
-	    dvx = vx - vx_old;
-	    ax = dvx / dt;
-
-	    vx_old = vx;
-	    
-	    pos="x =" + x ;
-	    document.getElementById("position").innerHTML=pos;
-	    dur="dt =" + dt;
-	    document.getElementById("duracion").innerHTML=dur;
-	    dist="dx =" + dx;
-	    document.getElementById("distancia").innerHTML=dist;
-	    acel="ax =" + ax;
-	    document.getElementById("aceleracion").innerHTML=acel;
-	    vel="Vx =" + vx; 
-	    document.getElementById("velocidad").innerHTML=vel;
-    }
-    t_old = t;
-    x_old = x;
-}
-
-
-
-
-var h = 0.003;
-
 var stick = {
     
-    init: function(x1,y1,l,theta,vtheta) {
-	this.theta = theta;
-	this.vtheta = vtheta;
-	this.l = l;
-	this.x1 = x1;
-	this.y1 = y1;
+    theta: 0.0,
+    Vtheta: 0.01,
+    h: 0.005,
+    g: 9.8,
+    l: 5, 
+
+    f: function(angle) {
+	return (this.g /this.l )*Math.sin(angle) + ((200.0 * mouse.ax)/this.l) * Math.cos(angle);	
     },
     
-    x2: function() {
-	return this.x1 + this.l * Math.cos(this.theta);
+    RungeKutta: function() {
+
+	k1 = this.h* this.Vtheta;
+	l1 = this.h* this.f(this.theta);
+
+	k2 = this.h*(this.Vtheta + 0.5*l1);
+	l2 = this.h*this.f(this.theta + 0.5*k1);
+	
+	k3 = this.h*(this.Vtheta + 0.5*l2);
+	l3 = this.h*this.f(this.theta + 0.5*k2);
+	
+	k4 = this.h*(this.Vtheta + l3);
+	l4 = this.h*this.f(this.theta + k3);
+	
+	this.theta = this.theta + (k1 + 2.0*k2 + 2.0*k3 + k4)/6;
+	this.Vtheta = this.Vtheta + (l1 + 2.0*l2 + 2.0*l3 + l4)/6;
     },
-    
-    y2: function() {
-	return this.y1 - this.l * Math.sin(this.theta);
-    },
-    
 };
 
-
-
-stick.init(400,400,400,1.570796327,(2*Math.random()-1)/10);
-
-
-
-function f(alpha,acel) {
-    var g=980.0;// 1 metro = 100px
-    return -(g/stick.l)*Math.cos(alpha) - 100*acel * Math.sin(alpha);
-}
-
-function rungekutta() {
-    
-    k1 = h*stick.vtheta;
-    l1 = h*f(stick.theta,ax);
-    
-    k2 = h*(stick.vtheta + l1/2);
-    l2 = h*f(stick.theta + k1/2,ax);
-    
-    k3 = h*(stick.vtheta + l2/2);
-    l3 = h*f(stick.theta + k2/2,ax);
-    
-    k4 = h*(stick.vtheta + l3);
-    l4 = h*f(stick.theta + k3,ax);
-    
-    stick.theta = stick.theta + (k1 + 2.0*k2 + 2.0*k3 + k4)/6;
-    stick.vtheta = stick.vtheta + (l1 + 2.0*l2 + 2.0*l3 + l4)/6;
-}
-
 function drawer() {
-    printstatus();
-    rungekutta();
-    var linestick = document.getElementById("stick");
-    
-    linestick.setAttribute("x2", stick.x2());
-    linestick.setAttribute("y2", stick.y2());
+    var ImgGroup = document.getElementById("SVGroup");
+    deg = stick.theta * (180 / Math.PI);
+    ImgGroup.setAttribute("transform","rotate(" + deg + ",400,400)");
+    mouse.speed();
+    console.log(mouse.ax);
+    stick.RungeKutta();
 }
 
 var animationId = null;
@@ -135,7 +115,6 @@ function animationStart() {
     }
     else
     {
-	animationId = setInterval(drawer,3);
-	drawer();
+	animationId = setInterval(drawer, 5);
     }
 };
